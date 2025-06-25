@@ -3,6 +3,7 @@ import Canvas from "./Canvas";
 import Toolbox from "./Toolbox";
 import type { ShapeType } from "../utils/draw";
 import Paintbox from "./Paintbox";
+import RoomBox from "./RoomBox";
 
 const Landing = () => {
   const [selected, setSelected] = useState<ShapeType>("rectangle");
@@ -13,6 +14,7 @@ const Landing = () => {
       <Toolbox selected={selected} setSelected={setSelected} />
       <Paintbox color={color} setColor={setColor} />
       <Canvas selected={selected} color={color} />
+      <RoomBox />
     </div>
   );
 };

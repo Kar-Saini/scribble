@@ -83,7 +83,7 @@ export function draw(
           startX,
           startY,
           color: selectedColor,
-          width: Math.min(Math.abs(width), Math.abs(height)),
+          width: Math.min(width, height),
         };
         break;
       case "line":

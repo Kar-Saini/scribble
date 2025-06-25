@@ -28,7 +28,7 @@ const Paintbox = ({
             className={clsx(
               `w-8 h-8 my-2 rounded-full hover:cursor-pointer hover:scale-125 transition-all`,
               className,
-              color === colorName && "scale-110 border-4 border-neutral-600"
+              color === colorName && "scale-110 border-5 border-neutral-600"
             )}
           />
         ))}
