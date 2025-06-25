@@ -1,3 +1,5 @@
+export type ShapeType = "triangle" | "square" | "rectangle" | "line" | "circle";
+
 export type Shape =
   | {
       type: "triangle";
@@ -5,12 +7,14 @@ export type Shape =
       startY: number;
       width: number;
       height: number;
+      color: string;
     }
   | {
       type: "square";
       startX: number;
       startY: number;
       width: number;
+      color: string;
     }
   | {
       type: "rectangle";
@@ -18,6 +22,7 @@ export type Shape =
       startY: number;
       width: number;
       height: number;
+      color: string;
     }
   | {
       type: "line";
@@ -25,14 +30,23 @@ export type Shape =
       startY: number;
       endX: number;
       endY: number;
+      color: string;
+    }
+  | {
+      type: "circle";
+      startX: number;
+      startY: number;
+      radius: number;
+      color: string;
     };
 
 export function draw(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
-  selected: string,
+  selected: ShapeType,
   shapes: Shape[],
-  setShapes: (shapes: Shape[]) => void
+  setShapes: (shapes: Shape[]) => void,
+  selectedColor: string
 ) {
   let drawing = false;
   let startX = 0;
@@ -54,27 +68,58 @@ export function draw(
 
     switch (selected) {
       case "rectangle":
-        currentShape = { type: "rectangle", startX, startY, width, height };
+        currentShape = {
+          type: "rectangle",
+          startX,
+          startY,
+          width,
+          height,
+          color: selectedColor,
+        };
         break;
       case "square":
         currentShape = {
           type: "square",
           startX,
           startY,
+          color: selectedColor,
           width: Math.min(Math.abs(width), Math.abs(height)),
         };
         break;
       case "line":
-        currentShape = { type: "line", startX, startY, endX, endY };
+        currentShape = {
+          type: "line",
+          startX,
+          startY,
+          endX,
+          endY,
+          color: selectedColor,
+        };
         break;
       case "triangle":
-        currentShape = { type: "triangle", startX, startY, width, height };
+        currentShape = {
+          type: "triangle",
+          startX,
+          startY,
+          width,
+          height,
+          color: selectedColor,
+        };
+        break;
+      case "circle":
+        currentShape = {
+          type: "circle",
+          startX: startX + width / 2,
+          startY: startY + height / 2,
+          radius: Math.sqrt(width ** 2 + height ** 2) / 2,
+          color: selectedColor,
+        };
         break;
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     clearCanvas(canvas, ctx, shapes);
-    if (currentShape) drawShape(ctx, currentShape, "red");
+    if (currentShape) drawShape(ctx, currentShape, currentShape.color);
   }
 
   function handleMouseUp() {
@@ -105,21 +150,19 @@ function clearCanvas(
 ) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (const shape of shapes) {
-    drawShape(ctx, shape, "black");
+    drawShape(ctx, shape, shape.color);
   }
 }
 
 function drawShape(ctx: CanvasRenderingContext2D, shape: Shape, color: string) {
   ctx.beginPath();
-  ctx.fillStyle = color;
   ctx.strokeStyle = color;
-
   switch (shape.type) {
     case "rectangle":
-      ctx.fillRect(shape.startX, shape.startY, shape.width, shape.height);
+      ctx.strokeRect(shape.startX, shape.startY, shape.width, shape.height);
       break;
     case "square":
-      ctx.fillRect(shape.startX, shape.startY, shape.width, shape.width);
+      ctx.strokeRect(shape.startX, shape.startY, shape.width, shape.width);
       break;
     case "line":
       ctx.moveTo(shape.startX, shape.startY);
@@ -131,7 +174,11 @@ function drawShape(ctx: CanvasRenderingContext2D, shape: Shape, color: string) {
       ctx.lineTo(shape.startX, shape.startY + shape.height);
       ctx.lineTo(shape.startX + shape.width, shape.startY + shape.height);
       ctx.closePath();
-      ctx.fill();
+      ctx.stroke();
+      break;
+    case "circle":
+      ctx.arc(shape.startX, shape.startY, shape.radius, 0, 2 * Math.PI);
+      ctx.stroke();
       break;
   }
 }

@@ -1,15 +1,31 @@
 import { useEffect, useRef, useState } from "react";
-import { draw, type Shape } from "../utils/draw";
+import { draw, type Shape, type ShapeType } from "../utils/draw";
 
-const Canvas = ({ selected }: { selected: string }) => {
+const Canvas = ({
+  selected,
+  color,
+}: {
+  selected: ShapeType;
+  color: string;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [shapes, setShapes] = useState<Shape[]>([]);
-  const [height, setHeight] = useState<number>(0);
-  const [width, setWidth] = useState<number>(0);
 
   useEffect(() => {
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
+    const resizeCanvas = () => {
+      if (!canvasRef.current || !containerRef.current) return;
+      const container = containerRef.current;
+      canvasRef.current.width = container.clientWidth;
+      canvasRef.current.height = container.clientHeight;
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+    };
   }, []);
 
   useEffect(() => {
@@ -17,18 +33,16 @@ const Canvas = ({ selected }: { selected: string }) => {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const cleanup = draw(canvas, ctx, selected, shapes, setShapes);
+    const cleanup = draw(canvas, ctx, selected, shapes, setShapes, color);
     return cleanup;
-  }, [shapes, selected]);
-  console.log(shapes);
+  }, [selected, shapes, color]);
+
   return (
-    <div className="relative">
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        className="border"
-      />
+    <div
+      ref={containerRef}
+      className="relative h-screen w-full overflow-hidden"
+    >
+      <canvas ref={canvasRef} className="border" />
     </div>
   );
 };
