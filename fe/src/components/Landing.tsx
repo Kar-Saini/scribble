@@ -11,7 +11,6 @@ import SplashScreen from "./SplashScreen";
 
 const Landing = () => {
   const [showSplash, setShowSplash] = useState(true);
-
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [roomDetails, setRoomDetails] = useState<RoomDetails | null>(null);
   const [selected, setSelected] = useState<ShapeType>("rectangle");
@@ -65,7 +64,7 @@ const Landing = () => {
 
   console.log(roomDetails);
   if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+    return <SplashScreen />;
   }
   return (
     <div className="flex bg-pink-50 ">
