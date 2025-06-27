@@ -1,24 +1,40 @@
 import { Room } from "./Room";
+import { WebSocket } from "ws";
+import { User } from "./User";
 
 export class RoomManager {
-  public rooms: Room[];
-  static instance: RoomManager;
-  private constructor() {
-    this.rooms = [];
-  }
+  private static instance: RoomManager;
+  private rooms: Map<string, Room> = new Map();
 
-  public static getInstance() {
+  private constructor() {}
+
+  public static getInstance(): RoomManager {
     if (!RoomManager.instance) {
-      this.instance = new RoomManager();
+      RoomManager.instance = new RoomManager();
     }
     return RoomManager.instance;
   }
-  createRoom() {
-    const roomId = Math.ceil(Math.random() + 1000);
-    const newroom = new Room(roomId);
-    this.rooms.push(newroom);
+
+  public createRoom(
+    adminName: string,
+    adminId: string,
+    socket: WebSocket
+  ): void {
+    const roomId = Math.floor(Math.random() * 100_000).toString();
+    const room = new Room(roomId, adminId, adminName);
+    room.addUser(new User(adminId, socket));
+    room.broadcastAll({
+      type: "room_created",
+      payload: { roomId, adminId, adminName, size: room.userCount() },
+    });
+    this.rooms.set(roomId, room);
   }
-  deleteRoom(roomId: number) {
-    this.rooms = this.rooms.filter((room) => room.roomId !== roomId);
+
+  public getRoom(roomId: string): Room | undefined {
+    return this.rooms.get(roomId);
+  }
+
+  public deleteRoom(roomId: string): boolean {
+    return this.rooms.delete(roomId);
   }
 }

@@ -12,8 +12,11 @@ const Paintbox = ({
 }) => {
   const [showColor, setShowColor] = useState(false);
   return (
-    <div className="fixed left-2 top-1/2 -translate-y-1/2 w-14 h-auto bg-neutral-300 z-10 p-2 rounded-lg shadow flex flex-col justify-center items-center">
-      <div onClick={() => setShowColor(!showColor)}>
+    <div className="fixed left-2 top-1/2 -translate-y-1/2 w-14 h-auto bg-neutral-200 z-10 p-2 rounded-lg shadow-xl flex flex-col justify-center items-center">
+      <div
+        onClick={() => setShowColor(!showColor)}
+        className="hover:cursor-pointer"
+      >
         <FaPaintRoller
           size={40}
           className={`${showColor && "my-4 hover:cursor-pointer"} `}

@@ -1,17 +1,13 @@
 import { Shape } from "./types";
-
+import { WebSocket as ServerWebSocket } from "ws";
 export class User {
-  public name: string;
   public userId: string;
-  public ws: WebSocket;
+  public socket: ServerWebSocket;
   public shapes: Shape[];
-  public roomId: number;
 
-  constructor(name: string, userId: string, ws: WebSocket, roomId: number) {
-    this.name = name;
+  constructor(userId: string, socket: ServerWebSocket) {
     this.userId = userId;
-    this.ws = ws;
+    this.socket = socket;
     this.shapes = [];
-    this.roomId = roomId;
   }
 }
