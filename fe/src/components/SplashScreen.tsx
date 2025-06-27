@@ -40,7 +40,11 @@ export default function SplashScreen() {
               : "translate-y-4 opacity-0"
           }`}
         >
-          <p className="text-xl md:text-4xl text-gray-600 mb-8 font-extrabold">
+          {" "}
+          <p className="text-xl md:text-6xl text-gray-600 mb-8 font-extrabold tracking-widest">
+            SCRIBBLE
+          </p>
+          <p className="text-xl md:text-4xl text-gray-600 mb-8 font-bold">
             Collaborative Drawing Made Simple
           </p>
         </div>
